@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Frage an Miram</title>
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    min-height: 100vh;
+    background: linear-gradient(160deg, #ffe4ef 0%, #fff0f5 50%, #ffe9f4 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: #4a2a3a;
+  }
+
+  .card {
+    background: #ffffff;
+    border-radius: 22px;
+    padding: 30px 22px;
+    max-width: 400px;
+    width: 100%;
+    box-shadow: 0 15px 35px rgba(255, 105, 150, 0.18);
+    position: relative;
+    min-height: 260px;
+  }
+
+  .step {
+    display: none;
+    animation: fadeIn 0.35s ease;
+  }
+
+  .step.active {
+    display: block;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .badge {
+    display: inline-block;
+    background: #ffe0ec;
+    color: #e75480;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    padding: 5px 12px;
+    border-radius: 999px;
+    margin-bottom: 14px;
+  }
+
+  h1 {
+    font-size: 20px;
+    line-height: 1.4;
+    font-weight: 700;
+    color: #3d2233;
+    margin-bottom: 20px;
+  }
+
+  .buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  button {
+    border: none;
+    border-radius: 14px;
+    padding: 14px 18px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    font-family: inherit;
+  }
+
+  button:active {
+    transform: scale(0.96);
+  }
+
+  .btn-pink {
+    background: linear-gradient(135deg, #ff8fb1, #e75480);
+    color: #fff;
+    box-shadow: 0 6px 16px rgba(231, 84, 128, 0.3);
+  }
+
+  .btn-light {
+    background: #ffeef4;
+    color: #b3466c;
+  }
+
+  .btn-light:hover {
+    background: #ffe0eb;
+  }
+
+  .response-box {
+    background: #fff0f5;
+    border: 1px solid #ffd3e2;
+    border-radius: 14px;
+    padding: 16px;
+    font-size: 15px;
+    line-height: 1.5;
+    font-weight: 500;
+    color: #7a3d55;
+    margin-top: 16px;
+  }
+
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .grid-2 button {
+    font-size: 14px;
+    padding: 14px 8px;
+  }
+
+  /* Scattered wiggly menu */
+  .scatter-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 8px;
+    justify-content: center;
+    padding-top: 4px;
+    margin-bottom: 22px;
+  }
+
+  .scatter-btn {
+    background: linear-gradient(135deg, #ffb6cf, #ff8fb1);
+    color: #fff;
+    border: none;
+    border-radius: 14px;
+    padding: 11px 14px;
+    font-size: 13.5px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 5px 12px rgba(231, 84, 128, 0.25);
+    animation: wiggle 2.6s ease-in-out infinite;
+  }
+
+  @keyframes wiggle {
+    0%, 100% { transform: rotate(var(--r)); }
+    50% { transform: rotate(calc(var(--r) * -1)); }
+  }
+
+  .back-link {
+    display: inline-block;
+    margin-top: 18px;
+    background: none;
+    border: none;
+    color: #c1447a;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: underline;
+    cursor: pointer;
+    padding: 0;
+  }
+
+  .btn-continue {
+    width: 100%;
+    background: linear-gradient(135deg, #ff5f96, #d6336c);
+    color: #fff;
+    font-size: 15.5px;
+    padding: 15px;
+    box-shadow: 0 8px 20px rgba(214, 51, 108, 0.35);
+  }
+
+  /* Radio Optionen (Formspree) */
+  .radio-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #ffeef4;
+    border: 2px solid transparent;
+    border-radius: 14px;
+    padding: 13px 14px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: border-color 0.15s ease, background 0.15s ease;
+    font-size: 14.5px;
+    font-weight: 500;
+    color: #5c2f43;
+  }
+
+  .radio-option input {
+    accent-color: #e75480;
+    width: 17px;
+    height: 17px;
+    flex-shrink: 0;
+  }
+
+  .radio-option:has(input:checked) {
+    border-color: #e75480;
+    background: #ffe0ec;
+  }
+
+  #formspreeForm {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .submit-btn {
+    margin-top: 6px;
+    background: linear-gradient(135deg, #ff8fb1, #e75480);
+    color: #fff;
+    box-shadow: 0 6px 16px rgba(231, 84, 128, 0.3);
+  }
+
+  .submit-btn:disabled {
+    opacity: 0.6;
+    cursor: default;
+  }
+
+  /* Popup toast */
+  .toast {
+    position: fixed;
+    left: 50%;
+    bottom: 40px;
+    transform: translateX(-50%) translateY(20px);
+    background: linear-gradient(135deg, #ff8fb1, #e75480);
+    color: #fff;
+    padding: 16px 22px;
+    border-radius: 16px;
+    font-size: 15px;
+    font-weight: 600;
+    box-shadow: 0 10px 25px rgba(231, 84, 128, 0.35);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease, transform 0.4s ease;
+    max-width: 320px;
+    text-align: center;
+    z-index: 10;
+  }
+
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+</style>
+</head>
+<body>
+
+  <div class="card">
+
+    <!-- Schritt 1 -->
+    <div class="step active" id="step1">
+      <span class="badge">👋</span>
+      <h1>So wie ich nunmal Masochist bin – und nicht normal mit dir reden kann (du bist nämlich ziemlich beängstigend) – hab ich das hier gemacht... na, du siehst ja selbst.</h1>
+      <div class="buttons">
+        <button class="btn-pink" id="toStep2">Okay 🙄</button>
+      </div>
+    </div>
+
+    <!-- Schritt 2 -->
+    <div class="step" id="step2">
+      <span class="badge">🤨</span>
+      <h1>Kurz vorweg – wenn dich das alles überhaupt nicht interessiert, Noten sind schließlich wichtiger, dann sag's einfach und ich lass dich komplett in Ruhe! Keine Blumen mehr, keine Peinlichkeit, kein Yavuz.</h1>
+      <div class="buttons">
+        <button class="btn-pink" id="btnInterested">Alles gut – mich interessiert's sogar 😌</button>
+        <button class="btn-light" id="btnLater">Sorry, aber ich brauch noch Zeit...</button>
+        <button class="btn-light" id="btnNo">Mich interessiert das nicht. 😔💔</button>
+      </div>
+    </div>
+
+    <!-- Später -->
+    <div class="step" id="stepLater">
+      <span class="badge">😚</span>
+      <h1>Okay. Wenn du's dir überlegt hast, sag einfach Bescheid – du weißt ja, wo du mich findest.</h1>
+    </div>
+
+    <!-- Nein -->
+    <div class="step" id="stepNo">
+      <span class="badge">👍</span>
+      <h1>Okay! Dann existiere ich einfach weiter.</h1>
+    </div>
+
+    <!-- Schritt 3: Reaktion + Essen -->
+    <div class="step" id="step3">
+      <span class="badge">😯</span>
+      <h1>Oh! Ich dachte, du hättest gar keine menschlichen Gefühle. Naja, egal... mir fällt gerade nicht mehr ein, was ich noch schreiben soll! Deswegen...</h1>
+      <p style="font-weight:700; margin-bottom:12px;">Was von diesem hier gefällt dir am meisten? 🥰</p>
+      <div class="grid-2" id="foodGrid">
+        <button class="btn-light">Pizza 🍕</button>
+        <button class="btn-light">Döner 🥙</button>
+        <button class="btn-light">Sushi 🍣</button>
+        <button class="btn-light">Schokolade 🍫</button>
+      </div>
+    </div>
+
+    <!-- Schritt 4: Hobby -->
+    <div class="step" id="step4">
+      <span class="badge">🎨</span>
+      <h1>Dein Lieblingshobby!</h1>
+      <div class="grid-2" id="hobbyGrid">
+        <button class="btn-light">Zocken 🎮</button>
+        <button class="btn-light">Lesen 📚</button>
+        <button class="btn-light">Musik hören 🎧</button>
+        <button class="btn-light">Schlafen 😴</button>
+      </div>
+    </div>
+
+    <!-- Schritt 5: Scatter Menü -->
+    <div class="step" id="step5">
+      <span class="badge">🤔</span>
+      <h1>Khem... mir gehen langsam die Ideen aus... Aber vielleicht interessieren dich ja ein paar Sachen:</h1>
+      <div class="scatter-wrap">
+        <button class="scatter-btn" style="--r:-4deg; animation-delay:0s;" data-target="q1">Hast du das wirklich selbst gemacht?</button>
+        <button class="scatter-btn" style="--r:3deg; animation-delay:0.3s;" data-target="q2">Weiß Yavuz davon?</button>
+        <button class="scatter-btn" style="--r:-2deg; animation-delay:0.6s;" data-target="q3">Wo ist diese Papierrose?</button>
+        <button class="scatter-btn" style="--r:5deg; animation-delay:0.2s;" data-target="q4">Warum ausgerechnet ich?</button>
+        <button class="scatter-btn" style="--r:-3deg; animation-delay:0.5s;" data-target="q5">Seit wann denkst du eigentlich so über mich?</button>
+        <button class="scatter-btn" style="--r:2deg; animation-delay:0.8s;" data-target="q6">Ist das dein Ernst oder ein Spiel?</button>
+      </div>
+      <button class="btn-continue" id="toFinal">Ich habe alles gelesen! (Weiter) ➔</button>
+    </div>
+
+    <!-- Antwortseiten -->
+    <div class="step" id="q1">
+      <span class="badge">💻</span>
+      <h1>Hast du das wirklich selbst gemacht?</h1>
+      <div class="response-box">Ja, ein bisschen HTML/CSS aus dem Informatikunterricht. Ein separates Design nur für dich.</div>
+      <button class="back-link" onclick="showStep('step5')">← Weitere Fragen</button>
+    </div>
+
+    <div class="step" id="q2">
+      <span class="badge">🤫</span>
+      <h1>Weiß Yavuz davon?</h1>
+      <div class="response-box">Nein. Er weiß sowieso schon zu viel und geht mir langsam auf die Nerven 😠💢</div>
+      <button class="back-link" onclick="showStep('step5')">← Weitere Fragen</button>
+    </div>
+
+    <div class="step" id="q3">
+      <span class="badge">🌹</span>
+      <h1>Wo ist diese Papierrose?</h1>
+      <div class="response-box">In der Mülltonne... Spaß! Die wartet nur auf den richtigen Moment 😉</div>
+      <button class="back-link" onclick="showStep('step5')">← Weitere Fragen</button>
+    </div>
+
+    <div class="step" id="q5">
+      <span class="badge">⏳</span>
+      <h1>Seit wann denkst du eigentlich so über mich?</h1>
+      <div class="response-box">Ähm... also ehrlich gesagt... ich glaube seit der 7. oder 8. Klasse 😅</div>
+      <button class="back-link" onclick="showStep('step5')">← Weitere Fragen</button>
+    </div>
+
+    <div class="step" id="q6">
+      <span class="badge">😤</span>
+      <h1>Ist das dein Ernst oder ein Spiel?</h1>
+      <div class="response-box">Absolut! Wenn das ein Scherz wäre, hätte ich mir nicht die ganze Mühe gemacht. Und mit dir macht man bei sowas keine Witze... du würdest mir direkt den Kiefer brechen 💀</div>
+      <button class="back-link" onclick="showStep('step5')">← Weitere Fragen</button>
+    </div>
+
+    <!-- Schritt 6: Finale mit Formspree -->
+    <div class="step" id="step6">
+      <span class="badge">🏁</span>
+      <h1>Oha, du hast wirklich alles durchgelesen... Respekt! 😂 Das ist das Ende der Website.</h1>
+      <p style="font-weight:700; margin-bottom:12px;">Was möchtest du jetzt eigentlich?</p>
+
+      <form id="formspreeForm" action="https://formspree.io/f/xjykpgbr" method="POST">
+        <label class="radio-option">
+          <input type="radio" name="antwort" value="Ich möchte schauen, ob sich daraus was entwickelt" required>
+          Ich möchte schauen, ob sich daraus was entwickelt 🙈
+        </label>
+        <label class="radio-option">
+          <input type="radio" name="antwort" value="Ich möchte einfach nur ganz normal schreiben / befreundet sein">
+          Ich möchte einfach nur ganz normal schreiben / befreundet sein 🤝
+        </label>
+        <label class="radio-option">
+          <input type="radio" name="antwort" value="Ich brauche noch etwas Zeit zum Überlegen">
+          Ich brauche noch etwas Zeit zum Überlegen ⏳
+        </label>
+        <button type="submit" class="submit-btn" id="submitBtn">Antwort absenden 🚀</button>
+      </form>
+
+      <div class="response-box" id="sentMsg" style="display:none;">
+        Danke! Deine Antwort wurde anonym an mich gesendet 😉
+      </div>
+    </div>
+
+  </div>
+
+  <div class="toast" id="toast">Weil du extrem hübsch bist 🥰</div>
+
+<script>
+  function showStep(id) {
+    document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+  }
+
+  document.getElementById('toStep2').addEventListener('click', () => showStep('step2'));
+
+  document.getElementById('btnInterested').addEventListener('click', () => showStep('step3'));
+  document.getElementById('btnLater').addEventListener('click', () => showStep('stepLater'));
+  document.getElementById('btnNo').addEventListener('click', () => showStep('stepNo'));
+
+  // Essen -> egal was, weiter zu Hobby
+  document.querySelectorAll('#foodGrid button').forEach(btn => {
+    btn.addEventListener('click', () => showStep('step4'));
+  });
+
+  // Hobby -> egal was, weiter zum Scatter-Menü
+  document.querySelectorAll('#hobbyGrid button').forEach(btn => {
+    btn.addEventListener('click', () => showStep('step5'));
+  });
+
+  // Scatter-Buttons
+  document.querySelectorAll('.scatter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = btn.getAttribute('data-target');
+      if (target === 'q4') {
+        const toast = document.getElementById('toast');
+        toast.classList.add('show');
+        setTimeout(() => {
+          toast.classList.remove('show');
+        }, 2500);
+      } else {
+        showStep(target);
+      }
+    });
+  });
+
+  // Weiter zum finalen Screen
+  document.getElementById('toFinal').addEventListener('click', () => showStep('step6'));
+
+  // Formspree senden
+  const form = document.getElementById('formspreeForm');
+  const submitBtn = document.getElementById('submitBtn');
+  const sentMsg = document.getElementById('sentMsg');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Wird gesendet...';
+
+    try {
+      await fetch(form.action, {
+        method: 'POST',
+        body: new FormData(form),
+        headers: { 'Accept': 'application/json' }
+      });
+    } catch (err) {
+      console.error(err);
+    }
+
+    form.style.display = 'none';
+    sentMsg.style.display = 'block';
+  });
+</script>
+
+</body>
+        </html>
